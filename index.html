@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live From The 5ive – Best Performance Competition</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #00e5a0;
+    --purple: #7b2fff;
+    --blue: #1e90ff;
+    --yellow: #f5c518;
+    --dark: #060810;
+    --card-bg: #0d1120;
+    --glow-green: 0 0 30px rgba(0,229,160,0.5);
+    --glow-purple: 0 0 30px rgba(123,47,255,0.5);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--dark);
+    color: #fff;
+    font-family: 'Barlow', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ---- NOISE TEXTURE OVERLAY ---- */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.35;
+  }
+
+  /* ---- HERO ---- */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 24px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 60% at 20% 50%, rgba(0,229,160,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 70% at 80% 40%, rgba(123,47,255,0.15) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 50% 80%, rgba(30,144,255,0.08) 0%, transparent 70%),
+      linear-gradient(180deg, #060810 0%, #090f1e 100%);
+    z-index: 0;
+  }
+
+  /* animated floating orbs */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.25;
+    animation: float 8s ease-in-out infinite;
+    z-index: 0;
+  }
+  .orb-1 { width: 400px; height: 400px; background: var(--purple); top: -100px; left: -100px; animation-delay: 0s; }
+  .orb-2 { width: 300px; height: 300px; background: var(--green); bottom: -50px; right: -50px; animation-delay: -3s; }
+  .orb-3 { width: 200px; height: 200px; background: var(--blue); top: 40%; right: 15%; animation-delay: -5s; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-30px) scale(1.05); }
+  }
+
+  .hero-content { position: relative; z-index: 1; max-width: 800px; }
+
+  .logo-wordmark {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 10vw, 110px);
+    line-height: 0.9;
+    letter-spacing: 2px;
+    color: #fff;
+    text-shadow: var(--glow-green);
+    animation: slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .logo-wordmark span.green { color: var(--green); }
+  .logo-wordmark span.purple { color: var(--purple); }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .subtitle {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(20px, 4vw, 36px);
+    font-weight: 900;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--yellow);
+    margin-top: 12px;
+    animation: slideDown 0.8s 0.15s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .tagline {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: clamp(14px, 2.5vw, 20px);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-top: 8px;
+    animation: slideDown 0.8s 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .ticket-btn {
+    display: inline-block;
+    margin-top: 40px;
+    padding: 20px 50px;
+    background: linear-gradient(135deg, var(--green) 0%, var(--blue) 100%);
+    color: #060810;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 3px;
+    text-decoration: none;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 40px rgba(0,229,160,0.4);
+    animation: slideDown 0.8s 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .ticket-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 60%);
+  }
+
+  .ticket-btn:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 0 60px rgba(0,229,160,0.7);
+  }
+
+  .ticket-btn:active { transform: scale(0.98); }
+
+  .pulse-ring {
+    position: absolute;
+    inset: -4px;
+    border-radius: 6px;
+    border: 2px solid var(--green);
+    opacity: 0;
+    animation: pulse 2.5s ease-out infinite;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(1.15); opacity: 0; }
+  }
+
+  .scroll-hint {
+    margin-top: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    opacity: 0.4;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  .scroll-hint svg { width: 20px; }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+  }
+
+  /* ---- DIVIDER ---- */
+  .divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--green), var(--purple), transparent);
+    opacity: 0.5;
+  }
+
+  /* ---- SECTIONS ---- */
+  section {
+    padding: 80px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 6vw, 64px);
+    letter-spacing: 4px;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .section-label span { color: var(--green); }
+
+  .section-rule {
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--green), var(--purple));
+    margin-bottom: 40px;
+    border-radius: 2px;
+  }
+
+  /* ---- EVENT INFO CARDS ---- */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  .info-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    padding: 28px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+
+  .info-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, var(--green), var(--purple));
+  }
+
+  .info-card:hover {
+    border-color: rgba(0,229,160,0.25);
+    transform: translateY(-4px);
+  }
+
+  .info-icon {
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+
+  .info-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 8px;
+  }
+
+  .info-value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.3;
+  }
+
+  .info-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 4px;
+  }
+
+  /* ---- PERFORMER LIST ---- */
+  .performers-section { padding: 0 24px 80px; max-width: 1100px; margin: 0 auto; }
+
+  .performer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+  }
+
+  .performer-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: border-color 0.3s, background 0.3s, transform 0.2s;
+    cursor: default;
+  }
+
+  .performer-card:hover {
+    border-color: rgba(245,197,24,0.4);
+    background: rgba(245,197,24,0.04);
+    transform: translateX(4px);
+  }
+
+  .performer-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--yellow);
+    min-width: 32px;
+    line-height: 1;
+    opacity: 0.8;
+  }
+
+  .performer-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.5px;
+  }
+
+  /* ---- ABOUT MAXWELL ---- */
+  .maxwell-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    align-items: center;
+  }
+
+  @media (max-width: 700px) {
+    .maxwell-wrap { grid-template-columns: 1fr; }
+  }
+
+  .maxwell-img-box {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .maxwell-img-box::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    box-shadow: inset 0 0 0 2px rgba(0,229,160,0.3);
+  }
+
+  .maxwell-placeholder {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: linear-gradient(135deg, #0d1a2e 0%, #1a0d2e 100%);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: var(--green);
+    text-align: center;
+    padding: 24px;
+    border: 1px solid rgba(0,229,160,0.15);
+  }
+
+  .maxwell-placeholder .big-icon { font-size: 60px; margin-bottom: 16px; }
+
+  .maxwell-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 5vw, 56px);
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .maxwell-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 20px;
+  }
+
+  .maxwell-bio {
+    font-size: 16px;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .maxwell-link {
+    display: inline-block;
+    margin-top: 24px;
+    color: var(--green);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0,229,160,0.4);
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .maxwell-link:hover { border-color: var(--green); color: #fff; }
+
+  /* ---- CREW / TEAM ---- */
+  .crew-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .crew-badge {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 8px;
+    padding: 16px 24px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.75);
+    transition: border-color 0.2s, color 0.2s;
+    text-align: center;
+  }
+
+  .crew-badge:hover {
+    border-color: rgba(123,47,255,0.5);
+    color: #fff;
+  }
+
+  /* ---- CTA BANNER ---- */
+  .cta-banner {
+    background: linear-gradient(135deg, rgba(0,229,160,0.08) 0%, rgba(123,47,255,0.1) 100%);
+    border: 1px solid rgba(0,229,160,0.15);
+    border-radius: 20px;
+    padding: 60px 40px;
+    text-align: center;
+    margin: 0 24px 80px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(0,229,160,0.06) 0%, transparent 70%);
+  }
+
+  .cta-banner h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 6vw, 72px);
+    letter-spacing: 3px;
+    color: #fff;
+    position: relative;
+  }
+
+  .cta-banner p {
+    color: rgba(255,255,255,0.6);
+    margin-top: 12px;
+    font-size: 16px;
+    position: relative;
+  }
+
+  .cta-banner .ticket-btn {
+    margin-top: 32px;
+    font-size: 28px;
+    padding: 22px 60px;
+    animation: none;
+  }
+
+  /* ---- FOOTER ---- */
+  footer {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 40px 24px;
+    text-align: center;
+  }
+
+  .footer-brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .footer-sub {
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.2);
+    margin-top: 6px;
+    text-transform: uppercase;
+  }
+
+  /* ---- HOST/DJ BADGE ---- */
+  .host-dj {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+
+  .hd-chip {
+    background: rgba(123,47,255,0.12);
+    border: 1px solid rgba(123,47,255,0.3);
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .hd-chip span { color: var(--purple); margin-right: 6px; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; }
+
+  /* Responsive nav */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(6,8,16,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 32px;
+  }
+
+  .nav-brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: var(--green);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--green); }
+
+  .nav-cta {
+    background: var(--green);
+    color: #060810 !important;
+    padding: 8px 20px;
+    border-radius: 4px;
+    transition: background 0.2s !important;
+  }
+
+  .nav-cta:hover { background: #fff !important; color: #060810 !important; }
+
+  @media (max-width: 600px) {
+    .nav-links { display: none; }
+    nav { padding: 14px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">LFT5</div>
+  <ul class="nav-links">
+    <li><a href="#details">Details</a></li>
+    <li><a href="#performers">Performers</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="https://www.eventbrite.com/e/live-from-the-5ive-best-performance-competition-tickets-1988771713732" target="_blank" class="nav-cta">Get Tickets</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="hero-content">
+    <div class="logo-wordmark">
+      <span class="green">Live</span><br>
+      <span>From The </span><span class="purple">5ive</span>
+    </div>
+    <div class="subtitle">Best Performance Competition</div>
+    <div class="tagline">Brought to you by Klean Studios LLC</div>
+
+    <a href="https://www.eventbrite.com/e/live-from-the-5ive-best-performance-competition-tickets-1988771713732"
+       target="_blank" class="ticket-btn">
+      <span class="pulse-ring"></span>
+      🎟 Get Your Tickets Now
+    </a>
+
+    <div style="margin-top: 20px; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; letter-spacing: 2px; color: rgba(255,255,255,0.4); text-transform: uppercase;">
+      Saturday, June 6th, 2026 &nbsp;·&nbsp; Doors 7:30 PM &nbsp;·&nbsp; Roanoke, VA
+    </div>
+
+    <div class="scroll-hint">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      Scroll
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- EVENT DETAILS -->
+<section id="details">
+  <div class="section-label">Event <span>Details</span></div>
+  <div class="section-rule"></div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="info-icon">📍</div>
+      <div class="info-label">Venue</div>
+      <div class="info-value">The Spot On Kirk</div>
+      <div class="info-sub">22 Kirk Ave SW, Roanoke, VA 24011</div>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">📅</div>
+      <div class="info-label">Date</div>
+      <div class="info-value">Saturday, June 6th, 2026</div>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">🕖</div>
+      <div class="info-label">Schedule</div>
+      <div class="info-value">Doors Open at 7:30 PM</div>
+      <div class="info-sub">Show Starts at 8:00 PM</div>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">🎤</div>
+      <div class="info-label">Host & DJ</div>
+      <div class="info-value">Host: EWill</div>
+      <div class="info-sub">DJ: Ty' Dye</div>
+    </div>
+  </div>
+
+  <div style="margin-top: 40px; text-align: center;">
+    <a href="https://www.eventbrite.com/e/live-from-the-5ive-best-performance-competition-tickets-1988771713732"
+       target="_blank" class="ticket-btn" style="animation: none; margin-top: 0; font-size: 22px; padding: 18px 44px;">
+      🎟 Purchase Tickets on Eventbrite
+    </a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PERFORMERS -->
+<div class="performers-section" id="performers">
+  <section style="padding: 80px 0 40px;">
+    <div class="section-label">Official <span>Performers</span></div>
+    <div class="section-rule"></div>
+    <div style="font-family: 'Barlow Condensed', sans-serif; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 32px;">June 6th, 2026 Lineup</div>
+  </section>
+
+  <div class="performer-grid">
+    <div class="performer-card"><div class="performer-num">01</div><div class="performer-name">Just Some Random Dude</div></div>
+    <div class="performer-card"><div class="performer-num">02</div><div class="performer-name">Trey, The Stunna</div></div>
+    <div class="performer-card"><div class="performer-num">03</div><div class="performer-name">Stoneyjai</div></div>
+    <div class="performer-card"><div class="performer-num">04</div><div class="performer-name">Anthone Ray</div></div>
+    <div class="performer-card"><div class="performer-num">05</div><div class="performer-name">A.N.T.</div></div>
+    <div class="performer-card"><div class="performer-num">06</div><div class="performer-name">LITO</div></div>
+    <div class="performer-card"><div class="performer-num">07</div><div class="performer-name">Muscotti</div></div>
+    <div class="performer-card"><div class="performer-num">08</div><div class="performer-name">SwaggyB</div></div>
+    <div class="performer-card"><div class="performer-num">09</div><div class="performer-name">Taye The Truth</div></div>
+    <div class="performer-card"><div class="performer-num">10</div><div class="performer-name">Luminosity</div></div>
+    <div class="performer-card"><div class="performer-num">11</div><div class="performer-name">Dazzle</div></div>
+    <div class="performer-card"><div class="performer-num">12</div><div class="performer-name">KTAUSENCIA</div></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ABOUT MAXWELL -->
+<section id="about">
+  <div class="section-label">Meet the <span>Founder</span></div>
+  <div class="section-rule"></div>
+
+  <div class="maxwell-wrap">
+    <div class="maxwell-img-box">
+      <img src="Maxwell Performance Headshot (1).jpg" alt="Maxwell Klean" style="width:100%; border-radius:16px; display:block; object-fit:cover; aspect-ratio:3/4;" />
+    </div>
+    <div>
+      <div class="maxwell-name">Maxwell Klean</div>
+      <div class="maxwell-title">Founder — Klean Studios LLC &amp; L.F.T.5 Series</div>
+      <p class="maxwell-bio">
+        Maxwell is the founder of Klean Studios LLC and the originator of the Live From The 5ive event series. Known for his expert-level audio engineering and his executive production work on <em>The Biscuits and Gravy Show</em>, Maxwell has spent years building a platform that empowers local artists.
+        <br><br>
+        Since 2022, he has worked with more than 300 artists across both in-studio recordings and live performance productions — bringing an unmatched level of craft and community focus to every project.
+      </p>
+      <a href="https://www.kleanstudios.com" target="_blank" class="maxwell-link">→ Visit KleanStudios.com</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PARTNERS / CREW -->
+<section>
+  <div class="section-label">Making It <span>Happen</span></div>
+  <div class="section-rule"></div>
+  <div style="font-family: 'Barlow Condensed', sans-serif; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 32px; text-align:center;">Partners, Sponsors &amp; Crew</div>
+  <div class="crew-grid">
+    <div class="crew-badge">Live From The 5ive</div>
+    <div class="crew-badge">Klean Studios LLC</div>
+    <div class="crew-badge">The Biscuits &amp; Gravy Show</div>
+    <div class="crew-badge">EWillAmped</div>
+    <div class="crew-badge">Ty' Dye</div>
+    <div class="crew-badge">The Spot On Kirk</div>
+    <div class="crew-badge">Journiette Photography</div>
+    <div class="crew-badge">Get2Know Noke</div>
+    <div class="crew-badge">The Star Builder Program</div>
+    <div class="crew-badge">M.A.P.</div>
+  </div>
+</section>
+
+<!-- FINAL CTA BANNER -->
+<div class="cta-banner" id="tickets">
+  <h2>Don't Miss The Show</h2>
+  <p>12 performers. One winner. An unforgettable night in Roanoke.</p>
+  <a href="https://www.eventbrite.com/e/live-from-the-5ive-best-performance-competition-tickets-1988771713732"
+     target="_blank" class="ticket-btn">
+    <span class="pulse-ring"></span>
+    🎟 Get Tickets on Eventbrite
+  </a>
+  <div style="margin-top: 20px; font-size: 13px; letter-spacing: 2px; color: rgba(255,255,255,0.3); text-transform: uppercase; font-family: 'Barlow Condensed', sans-serif; position: relative;">
+    Saturday June 6th, 2026 · The Spot On Kirk, Roanoke VA
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">LIVE FROM THE 5IVE</div>
+  <div class="footer-sub">Brought to you by Klean Studios LLC &nbsp;·&nbsp; Roanoke, VA</div>
+  <div style="margin-top: 20px; font-size: 12px; color: rgba(255,255,255,0.15);">Best Performance Competition · June 6, 2026</div>
+</footer>
+
+<script>
+  // Stagger performer cards on scroll
+  const cards = document.querySelectorAll('.performer-card, .info-card, .crew-badge');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        entry.target.style.animationDelay = `${i * 40}ms`;
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  cards.forEach(c => {
+    c.style.opacity = '0';
+    c.style.transform = 'translateY(16px)';
+    c.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(c);
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const allCards = document.querySelectorAll('.performer-card, .info-card, .crew-badge');
+    const vis = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+          vis.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+    allCards.forEach(c => vis.observe(c));
+  });
+</script>
+</body>
+</html>
